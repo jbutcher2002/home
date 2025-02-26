@@ -213,6 +213,10 @@ class Query {
 		return $wpdb->get_var( $query );
 	}
 
+	public function get_raw_sql( $fields ) {
+		return $this->compose_select_query( $fields );
+	}
+
 	/**
 	 * Set the maximum number of rows to return
 	 * @param  integer $limit
@@ -374,6 +378,10 @@ class Query {
 			$where .= ' AND ' . $condition;
 		}
 
+        if ( is_a( $model, Page::class ) && false === strpos( $where, 'site_id=' ) ) {
+            $where .= ' AND site_id=' . get_current_blog_id();
+        }
+
 		if ( $where !== '' ) {
 			$where = ' WHERE 1=1' . $where;
 		}
@@ -390,8 +398,7 @@ class Query {
 			$offset = ' OFFSET ' . $this->offset;
 		}
 
-		$query = "{$statement}{$table}{$values}${where}{$order}{$limit}{$offset}";
-		return $query;
+		return "{$statement}{$table}{$values}$where{$order}{$limit}$offset";
 	}
 
 	/**
