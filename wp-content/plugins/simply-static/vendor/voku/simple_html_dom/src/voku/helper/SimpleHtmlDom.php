@@ -505,7 +505,7 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
      */
     public function getElementByClass(string $class): SimpleHtmlDomNodeInterface
     {
-        return $this->findMulti(".{$class}");
+        return $this->findMulti(".${class}");
     }
 
     /**
@@ -517,7 +517,7 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
      */
     public function getElementById(string $id): SimpleHtmlDomInterface
     {
-        return $this->findOne("#{$id}");
+        return $this->findOne("#${id}");
     }
 
     /**
@@ -552,7 +552,7 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
      */
     public function getElementsById(string $id, $idx = null)
     {
-        return $this->find("#{$id}", $idx);
+        return $this->find("#${id}", $idx);
     }
 
     /**
@@ -684,15 +684,11 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
     /**
      * Returns the parent of node.
      *
-     * @return SimpleHtmlDomInterface|null
+     * @return SimpleHtmlDomInterface
      */
-    public function parentNode(): ?SimpleHtmlDomInterface
+    public function parentNode(): SimpleHtmlDomInterface
     {
-        if ($node = $this->node->parentNode) {
-            return new static($node);
-        }
-
-        return null;
+        return new static($this->node->parentNode);
     }
 
     /**
@@ -835,6 +831,7 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
             ||
             $newDocument->getIsDOMDocumentCreatedWithoutHtmlWrapper()
         ) {
+
             // Remove doc-type node.
             if ($newDocument->getDocument()->doctype !== null) {
                 $newDocument->getDocument()->doctype->parentNode->removeChild($newDocument->getDocument()->doctype);
